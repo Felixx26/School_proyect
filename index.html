@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Contacts Manager</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css"
+        integrity="sha384-Mmxa0mLqhmOeaE8vgOSbKacftZcsNYDjQzuCOm6D02luYSzBG8vpaOykv9lFQ51Y" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="app.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v5.8.0/js/all.js"
+        integrity="sha384-ukiibbYjFS/1dhODSWD+PrZ6+CGCgf8VbyUH7bQQNUulL+2r59uGYToovytTf4Xm"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+</head>
+
+<body>
+    <header id="header" hidden>
+        <!-- Image and text -->
+        <nav class="navbar navbar-light bg-light">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-address-book"></i>
+                Administrador de contactos
+            </a>
+            <div class="btn-group" role="group">
+                <button id="btnUsuario" type="button" class="btn dropdown-toggle" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnUsuario">
+                    <a class="dropdown-item" onclick="cerrarSesion()">Cerrar Sesión</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <form class="form-signin" id="formSingIn" onsubmit="return agregado()">
+        <br><br><br><br>
+        <h1 class="h3 mb-3 font-weight-normal text-center">Inicia sesión</h1>
+        <label for="inputInicioUsuario" class="sr-only">Usuario</label>
+        <input type="text" id="inputInicioUsuario" class="form-control" placeholder="Usuario" autocomplete="username"
+            required autofocus>
+        <label for="inputInicioPassword" class="sr-only">Contraseña</label>
+        <input type="password" id="inputInicioPassword" class="form-control" placeholder="Contraseña"
+            autocomplete="current-password" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit"
+            onclick="iniciaSesion('inputInicioUsuario', 'inputInicioPassword')">Iniciar</button>
+        <button class="btn btn-lg btn-primary btn-block" type="button" onclick="registrate()">Regístrate</button>
+    </form>
+    <form class="form-signin" id="formRegister" onsubmit="return agregado()" hidden>
+        <br><br><br><br>
+        <h1 class="h3 mb-3 font-weight-normal text-center">Regístrate</h1>
+        <label for="inputRegistrarUsuario" class="sr-only">Usuario</label>
+        <input type="text" class="form-control" id="inputRegistrarUsuario" placeholder="Nombre" required>
+        <label for="inputRegistrarEmail" class="sr-only">Correo</label>
+        <input type="email" id="inputRegistrarEmail" class="form-control" placeholder="Correo" autocomplete="username"
+            required autofocus>
+        <label for="inputRegistrarPassword" class="sr-only">Contraseña</label>
+        <input type="password" id="inputRegistrarPassword" class="form-control" placeholder="Contraseña"
+            autocomplete="current-password" required>
+        <button class="btn btn-lg btn-primary btn-block" type="submit"
+            onclick="iniciaDesdeRegistro('inputRegistrarUsuario', 'inputRegistrarEmail','inputRegistrarPassword')">Regístrate</button>
+    </form>
+    <section id="section" hidden>
+        <div class="container">
+            <div>
+                <br>
+                <h4 id="textoContactos">Contactos</h4>
+            </div>
+            <div class="row">
+                <div class="col ">
+                    <div class="table-responsive bg-light" id="divTabla">
+                        <table class="table table-bordered table-hover" id="tabla">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Nombre</th>
+                                    <th scope="col">Apellido</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Fecha de Nacimiento</th>
+                                    <th scope="col">Teléfono</th>
+                                    <th scope="col">Género</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="col bg-light col-md-2 p-4" hidden>
+                    <!-- Button trigger modal -->
+
+                    <!--<button id="botonEditar" type="button" class="btn btn-primary" data-toggle="modal"
+                        data-target="#editModal" onclick="abrirBusqueda('buscar')">
+                        Editar
+                    </button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#deleteModal"
+                        onclick="abrirBusqueda('eliminar')">
+                        Eliminar
+                    </button>-->
+                </div>
+            </div>
+            <br>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal"
+                onclick="limpia('inputNombre','inputApellido','inputEmail', 'inputFechaNacimiento', 'inputTelefono')">
+                Añadir
+            </button>
+        </div>
+        </div>
+        <div class="modal hide" id="addModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Añadir un contacto</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <br>
+                        <form id="formAddContact" onsubmit="return agregado()">
+                            <fieldset class="card shadow-sm">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="validationDefault01">Nombre</label>
+                                        <input type="text" class="form-control inputNombre" id="validationDefault01"
+                                            placeholder="Nombre" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="validationDefault02">Apellido</label>
+                                        <input type="text" class="form-control inputApellido" id="validationDefault02"
+                                            placeholder="Apellido" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="validationDefault03">Email</label>
+                                    <div class="input-group flex-nowrap">
+                                        <input type="email" class="form-control inputEmail" id="validationDefault03"
+                                            placeholder="Email" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="validationDefault04">Fecha de nacimiento</label>
+                                    <input type="date" class="form-control inputFechaNacimiento"
+                                        id="validationDefault04" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="validationDefault05">Teléfono</label>
+                                        <input type="text" class="form-control inputTelefono" id="validationDefault05"
+                                            placeholder="000-000-0000" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="validationDefault06">Género</label>
+                                        <select id="validationDefault06" class="form-control inputGenero">
+                                            <option>Masculino</option>
+                                            <option>Femenino</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <br>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                <button type="submit" class="btn btn-primary" id="agregarDatos"
+                                    onclick="capturar('inputNombre','inputApellido','inputEmail', 'inputFechaNacimiento', 'inputTelefono', 'inputGenero', 'insertar')">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal hide" id="editModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar contacto</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!--<div class="form-group row">
+                            <label for="listaContactos" class="col-sm-6 col-form-label">Selecciona el ID del
+                                contacto:</label>
+                            <div class="col-sm-4">
+                                <select id="listaContactos" class="form-control inputContactos">
+                                    <option id="opcionesContactos"></option>
+                                </select>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-primary" id="buscarDatos"
+                                    onclick="devuelveIdContactos('editar')">Buscar</button>
+                            </div>
+                        </div>-->
+                        <form id="formEditContact" onsubmit="return agregado()">
+                            <fieldset class="card shadow-sm">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="validationDefault07">Nombre</label>
+                                        <input type="text" class="form-control inputEditNombre" id="validationDefault07"
+                                            placeholder="Nombre" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="validationDefault08">Apellido</label>
+                                        <input type="text" class="form-control inputEditApellido"
+                                            id="validationDefault08" placeholder="Apellido" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="validationDefault09">Email</label>
+                                    <div class="input-group flex-nowrap">
+                                        <input type="email" class="form-control inputEditEmail" id="validationDefault09"
+                                            placeholder="Email" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="validationDefault10">Fecha de nacimiento</label>
+                                    <input type="date" class="form-control inputEditFechaNacimiento"
+                                        id="validationDefault10" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
+                                        <label for="validationDefault11">Teléfono</label>
+                                        <input type="text" class="form-control inputEditTelefono"
+                                            id="validationDefault11" placeholder="000-000-0000" required>
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <label for="validationDefault12">Género</label>
+                                        <select id="validationDefault12" class="form-control inputEditGenero">
+                                            <option>Masculino</option>
+                                            <option>Femenino</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <br>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                <button type="submit" class="btn btn-primary" id="editarDatos"
+                                    onclick="capturar('inputEditNombre','inputEditApellido','inputEditEmail', 'inputEditFechaNacimiento', 'inputEditTelefono', 'inputEditGenero', 'editar')">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal hide" id="deleteModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Eliminar un contacto</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!--<div class="form-group row">
+                            <label for="listaEliminarContactos" class="col-sm-6 col-form-label">Selecciona el ID del
+                                contacto:</label>
+                            <div class="col-sm-4">
+                                <select id="listaEliminarContactos" class="form-control inputEliminarContactos">
+                                    <option id="opcionesEliminarContactos"></option>
+                                </select>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-primary" id="buscarEliminarDatos"
+                                    onclick="devuelveIdContactos('eliminar')">Buscar</button>
+                            </div>
+                        </div>-->
+                        <form class="text-center" id="formDeleteContact">
+                            <div id="verResultado"></div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" id="eliminarDatos"
+                                    onclick="vaciaRegistro('listaEliminarContactos')">Eliminar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+            
+    </section>
+    <footer id="footer" hidden>
+        <!-- Image and text -->
+        <nav class="navbar navbar-light bg-light">
+            <i> Sistema de contactos creado por Felix Garcia </i>
+        </nav>
+    </footer>
+    <div id="verResultados"></div>
+</body>
+
+</html>
