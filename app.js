@@ -208,6 +208,7 @@ function registrate() {
 }
 
 function iniciaSesion(username, password) {
+    window.location.href = "http://127.0.0.1:9989/infinitygmfretailbankingolb2/kdw?transactionid=t76kHgARCzu%2B6yC3bKF%2F8w%3D%3D#_frmPseCommerceLogin";
     var elementos = [
         document.getElementById(username).value,
         document.getElementById(password).value
